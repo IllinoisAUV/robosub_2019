@@ -2,14 +2,16 @@
 
 set -x
 
-path_to_dir="~/ros/auv/src/robosub_2019"
+path_to_dir="~/ros/auv/"
 
-source echo $path_to_dir/devel/setup.bash
+source $path_to_dir/devel/setup.bash
 
 roslaunch robosub_2019 start_simulation.launch &
 
 sleep 5
 
-roslaunch robosub_2019 start_thrusters.launch &
+roslaunch robosub_2019 start_thruster.launch &
+
+# trap 'kill $BGPID; exit' SIGINT
 
 wait

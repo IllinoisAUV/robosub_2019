@@ -9,6 +9,6 @@
         </include>
 
         <!-- remap arguments -->
-        <remap from="$(arg model)/cmd_vel" to="rexrov/thruster_manager/input" />
+        <remap from="$(arg model)/cmd_vel" to="/rexrov/thruster_manager/input" />
 
 </launch>
