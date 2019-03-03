@@ -1,0 +1,16 @@
+<robot name="gate">
+    <link name="back_plating"/>
+    <link name="left_plating"/>
+    <link name="right_plating"/>
+
+    <joint name="back_left_joint" type="fixed">
+        <parent link="back_plating"/>
+        <child link="left_plating"/>
+    </joint>
+
+    <joint name="back_right_joint" type="fixed">
+        <parent link="back_plating"/>
+        <child link="right_plating"/>
+    </joint>
+
+</robot>
