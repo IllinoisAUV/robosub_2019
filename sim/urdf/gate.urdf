@@ -2,6 +2,7 @@
     <link name="back_plating"/>
     <link name="left_plating"/>
     <link name="right_plating"/>
+    <link name="middle_plating"/>
 
     <joint name="back_left_joint" type="fixed">
         <parent link="back_plating"/>
@@ -11,6 +12,11 @@
     <joint name="back_right_joint" type="fixed">
         <parent link="back_plating"/>
         <child link="right_plating"/>
+    </joint>
+
+    <joint name="back_middle_joint" type="fixed">
+        <parent link="back_plating"/>
+        <child link="middle_plating"/>
     </joint>
 
 </robot>
