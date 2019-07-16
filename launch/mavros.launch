@@ -1,0 +1,16 @@
+<launch>
+
+  <arg name = "sitl" default = "false" />
+  <arg name = "fcu_url" default = "/dev/ttyACM0:921600" />
+  <arg name = "gcu_url" default = "" />
+
+  <arg name = "log_output" default = "screen" />
+
+  <!-- launch Mavros with given fcu_url -->
+  <include file="$(find mavros)/launch/apm.launch">
+    <arg name = "fcu_url" value = "$(arg fcu_url)" />
+    <arg name = "gcu_url" value = "$(arg gcu_url)" />
+    <arg name = "log_output" value = "$(arg log_output)" />
+  </include>
+
+</launch>

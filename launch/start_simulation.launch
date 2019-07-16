@@ -1,8 +1,8 @@
 <launch>
-	
+
 	<!-- Model to launch -->
 	<arg name="model" default="rexrov" />
-	
+
 	<!-- Model file to launch -->
 	<arg name="model_file" default="upload_rexrov" />
 
@@ -16,11 +16,11 @@
 	<include file="$(find uuv_descriptions)/launch/$(arg model_file).launch" />
 
 	<!-- launch thruster control node and topic -->
-	<include file="$(find uuv_thruster_manager)/launch/thruster_manager.launch" >
+	<!-- <include file="$(find uuv_thruster_manager)/launch/thruster_manager.launch" >
 		<arg name="model_name" value="$(arg model)" />
-	</include>
+	</include> -->
 
 	<!-- remap arguments -->
-	<remap from="$(arg model)/cmd_vel" to="rexrov/thruster_manager/input" />
+	<!-- <remap from="$(arg model)/cmd_vel" to="rexrov/thruster_manager/input" /> -->
 
 </launch>

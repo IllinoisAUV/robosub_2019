@@ -12,6 +12,6 @@ sleep 5
 
 roslaunch robosub_2019 start_thruster.launch &
 
-# trap 'kill $BGPID; exit' SIGINT
+trap 'kill $(jobs -p)' SIGINT SIGTERM EXIT
 
 wait

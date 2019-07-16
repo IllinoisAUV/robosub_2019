@@ -1,14 +1,14 @@
 <launch>
-	
+
 	<!-- Model to launch -->
         <arg name="model" default="rexrov" />
 
 	<!-- launch thruster control node and topic -->
-        <include file="$(find uuv_thruster_manager)/launch/thruster_manager.launch" >
+        <include file="$(find uuv_control_cascaded_pid)/launch/joy_velocity.launch" >
                 <arg name="model_name" value="$(arg model)" />
+								<remap from="/cmd_vel" to="/rexrov/cmd_vel" />
         </include>
 
         <!-- remap arguments -->
-        <remap from="$(arg model)/cmd_vel" to="/rexrov/thruster_manager/input" />
 
 </launch>
