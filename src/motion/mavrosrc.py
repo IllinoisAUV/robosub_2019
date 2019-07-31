@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 import rospy
 import sys
 import time
@@ -7,7 +9,7 @@ import numpy as np
 from geometry_msgs.msg import *
 from mavros_msgs import *
 
-class MavrosRC(Object):
+class MavrosRC(object):
 
     def __init__(self):
 
@@ -36,9 +38,9 @@ class MavrosRC(Object):
         rc_pub.publish(msg)
 
     def angleToPpm(self, angle):
-        -M_PI = 1000
+        neg_M_PI = 1000
         M_PI = 2000
-        ppm = (angle - (-M_PI)) / (M_PI - (-M_PI)) * (1000) + 1000
+        ppm = (angle - (neg_M_PI)) / (M_PI - (neg_M_PI)) * (1000) + 1000
 
         return ppm
 
@@ -49,3 +51,10 @@ class MavrosRC(Object):
             speed = -1.0
 
         return 1500 + speed * 500.0
+
+def main():
+    mavrc = MavrosRC()
+    rospy.spin()
+
+if __name__ == "__main__":
+    main()
