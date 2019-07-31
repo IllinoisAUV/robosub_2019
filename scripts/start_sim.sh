@@ -12,6 +12,6 @@ sleep 5
 
 roslaunch robosub_2019 start_thruster.launch &
 
-trap 'kill $(jobs -p)' SIGINT SIGTERM EXIT
+trap 'kill $(jobs -p); killall gzserver; killall gzclient' SIGINT SIGTERM EXIT
 
 wait

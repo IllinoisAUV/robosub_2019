@@ -2,7 +2,7 @@
 
   <arg name = "sitl" default = "false" />
   <arg name = "fcu_url" default = "/dev/ttyACM0:921600" />
-  <arg name = "gcu_url" default = "" />
+  <arg name = "gcu_url" default = "udp://@10.42.0.1:14550" />
 
   <arg name = "log_output" default = "screen" />
 

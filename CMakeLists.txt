@@ -8,10 +8,15 @@ project(robosub_2019)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  message_generation
   geometry_msgs
+  mavros
   roscpp
   rospy
+  mavros_msgs
+  nav_msgs
   std_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -71,7 +76,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   geometry_msgs#   std_msgs
+#   geometry_msgs std_msgs nav_msgs mavros_msgs
 # )
 
 ################################################
@@ -106,7 +111,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES robosub_2019
-#  CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs
+CATKIN_DEPENDS mavros geometry_msgs nav_msgs mavros_msgs roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
