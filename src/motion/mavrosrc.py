@@ -7,7 +7,7 @@ import time
 import numpy as np
 
 from geometry_msgs.msg import *
-from mavros_msgs import *
+from mavros_msgs.msg import *
 
 class MavrosRC(object):
 
@@ -15,9 +15,9 @@ class MavrosRC(object):
 
         rospy.init_node("mavrosrc_node")
 
-        rc_sub = rospy.Subscriber("cmd_vel", Twist, self.rc_callback)
+        self.rc_pub = rospy.Publisher("/mavros/rc/override", OverrideRCIn, queue_size=1)
 
-        rc_pub = rospy.Publisher("/mavros/rc/override", OverrideRCIn, queue_size=1)
+        self.rc_sub = rospy.Subscriber("cmd_vel", Twist, self.rc_callback)
 
     def rc_callback(self, vel):
 
@@ -35,7 +35,7 @@ class MavrosRC(object):
         msg.channels[6] = 1500
         msg.channels[7] = 1500
 
-        rc_pub.publish(msg)
+        self.rc_pub.publish(msg)
 
     def angleToPpm(self, angle):
         neg_M_PI = 1000
