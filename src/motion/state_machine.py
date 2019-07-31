@@ -103,8 +103,9 @@ def main():
 
     rospy.init_node("fsm")
 
-    if len(sys.argv) != 0 and sys.argv[1] == "--sim":
-        fsm = FSM(True)
+    if len(sys.argv) != 0:
+        if sys.argv[1] == "--sim":
+            fsm = FSM(True)
     else:
         fsm = FSM(False)
 
