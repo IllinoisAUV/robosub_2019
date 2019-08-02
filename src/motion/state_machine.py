@@ -8,7 +8,7 @@ import time
 
 import numpy as np
 
-required_orientation = 2.25
+required_orientation = 0.140
 take_layout = ["turn", "head_to_gate", "gate", "path", "buoys"]
 
 class FSM(object):
@@ -42,7 +42,7 @@ class FSM(object):
 
         # DIVE REQUIRED AMOUNT BASED ON SECONDS
         # ADD Support for dive by height using Pressure Sensor
-        self.Dive(3)
+        self.Dive(4)
 
         rospy.sleep(1)
 
@@ -60,9 +60,33 @@ class FSM(object):
 
         self.Turn(0)
 
-        self.Dive(3)
+        rospy.sleep(1)
 
-        self.goStraight(5)
+        self.goStraight(10)
+
+        self.Dive(4)
+
+        rospy.sleep(1)
+
+        self.goStraight(10)
+
+        # TESTING
+
+        # self.Dive(2)
+        #
+        # rospy.sleep(1)
+        #
+        # self.Turn(0)
+        #
+        # rospy.sleep(1)
+        #
+        # self.goStraight(2)
+        #
+        # self.Turn(5)
+        #
+        # rospy.sleep(3)
+        #
+        # self.Turn(0)
 
         # self.goStraight(40.0)
 
@@ -82,9 +106,9 @@ class FSM(object):
             deg += 2*np.pi
 
         if deg < np.pi:
-            vel.angular.z = 0.1
+            vel.angular.z = 0.125
         else:
-            vel.angular.z = -0.1
+            vel.angular.z = -0.125
 
         rospy.loginfo("STARTING TURNING")
 
