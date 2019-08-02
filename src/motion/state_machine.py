@@ -8,7 +8,7 @@ import time
 
 import numpy as np
 
-required_orientation = np.pi*3/4
+required_orientation = 2.25
 take_layout = ["turn", "head_to_gate", "gate", "path", "buoys"]
 
 class FSM(object):
@@ -21,23 +21,53 @@ class FSM(object):
 
     def fsm_start(self):
 
+        # Change Mode to Depth Hold Mode
+        while (True and not self.sim):
+            data = self.controller.changeToDepHold()
+            if data == False:
+                rospy.loginfo("Depth Hold Mode Failed, Retrying")
+            else:
+                break
+
         # ARM THE SUB IF NOT IN SIM
         while (True and not self.sim):
             data = self.controller.doArming()
             if data == False:
-                print ("Arming Failed, Retrying")
+                rospy.loginfo("Arming Failed, Retrying")
             else:
                 break
 
         # Turn REQUIRED amount to required_orientation
-        self.Turn()
+        # self.Turn()
 
         # DIVE REQUIRED AMOUNT BASED ON SECONDS
         # ADD Support for dive by height using Pressure Sensor
-        self.Dive(2.0)
+        self.Dive(3)
+
+        rospy.sleep(1)
+
+        self.Turn(0)
+
+        rospy.sleep(1)
+
+        self.goStraight(10)
+
+        rospy.sleep(1)
+
+        self.Turn(7.5)
+
+        rospy.sleep(3)
+
+        self.Turn(0)
+
+        self.Dive(3)
+
+        self.goStraight(5)
+
+        # self.goStraight(40.0)
 
     # TRY SETPOINT_ATTITUDE
-    def Turn(self):
+    def Turn_helper(self):
 
         global required_orientation
 
@@ -52,17 +82,17 @@ class FSM(object):
             deg += 2*np.pi
 
         if deg < np.pi:
-            vel.angular.z = -0.25
+            vel.angular.z = 0.1
         else:
-            vel.angular.z = 0.25
+            vel.angular.z = -0.1
 
         rospy.loginfo("STARTING TURNING")
 
-        while abs(deg) > np.pi/8:
+        while abs(deg) > np.pi/20 and not rospy.is_shutdown():
 
             deg = abs(self.controller.attitude[2] - required_orientation)
 
-            rospy.loginfo(self.controller.attitude)
+            # rospy.loginfo(self.controller.attitude[2])
 
             if deg > np.pi:
                 deg -= 2*np.pi
@@ -76,8 +106,37 @@ class FSM(object):
 
         rospy.loginfo("TURNING DONE")
 
+    def Turn(self, sec):
+
+        if sec == 0:
+            self.Turn_helper()
+            return
+
+        vel = Twist()
+
+        rospy.loginfo("Turn 2-3 Times")
+        rospy.loginfo ("Current attitude: " + str(self.controller.attitude[2]))
+        rospy.loginfo ("Required attitude: " + str(required_orientation))
+
+        vel.angular.z = 0.4
+
+        rospy.loginfo("STARTING TURNING")
+
+        start_time = time.time()
+
+        while time.time() < start_time + sec:
+            self.controller.pub_cmd_vel.publish(vel)
+            rospy.sleep(1)
+
+        vel.angular.z = 0.0
+        self.controller.pub_cmd_vel.publish(vel)
+        rospy.sleep(1)
+
+        rospy.loginfo("TURNING DONE")
+
     def Dive(self, sec):
         # Add distance or seconds
+
         rospy.loginfo("DIVING")
 
         vel = Twist()
@@ -90,7 +149,7 @@ class FSM(object):
 
         while time.time() <= start_time + sec:
             self.controller.pub_cmd_vel.publish(vel)
-            rospy.sleep(1)
+            rospy.sleep(0.5)
 
         vel = Twist()
         vel.angular.z = 0.0
@@ -98,12 +157,36 @@ class FSM(object):
         rospy.sleep(1)
         rospy.loginfo("DIVING OVER")
 
+    def goStraight(self, sec):
+
+        rospy.loginfo("GOING STRAIGHT")
+
+        vel = Twist()
+
+        vel.linear.x = 0.4
+
+        rospy.loginfo("Speed: " + str(vel.linear.z))
+        start_time = time.time()
+
+        # sleep rate
+
+        while time.time() <= start_time + sec:
+            self.controller.pub_cmd_vel.publish(vel)
+            rospy.sleep(0.5)
+
+        vel = Twist()
+        vel.linear.x = 0.0
+        self.controller.pub_cmd_vel.publish(vel)
+
+        rospy.sleep(1)
+        rospy.loginfo("GO STRAIGHT OVER")
+
 
 def main():
 
     rospy.init_node("fsm")
 
-    if len(sys.argv) != 0:
+    if len(sys.argv) > 1:
         if sys.argv[1] == "--sim":
             fsm = FSM(True)
     else:

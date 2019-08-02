@@ -25,15 +25,14 @@ class MavrosRC(object):
 
         msg = OverrideRCIn()
 
-        msg.channels[0] = self.angleToPpm(vel.angular.y)
-        msg.channels[1] = self.angleToPpm(vel.angular.x)
+        msg.channels[0] = 1500
+        msg.channels[1] = 1500
         msg.channels[2] = self.speedToPpm(vel.linear.z)
         msg.channels[3] = self.speedToPpm(vel.angular.z)
         msg.channels[4] = self.speedToPpm(vel.linear.x)
         msg.channels[5] = self.speedToPpm(vel.linear.y)
 
         msg.channels[6] = 1500
-        msg.channels[7] = 1500
 
         self.rc_pub.publish(msg)
 

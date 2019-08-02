@@ -20,7 +20,7 @@ class Controller(object):
             accel_topic = "/rexrov/cmd_accel"
         else:
             odom_topic = "/mavros/global_position/local"
-            vel_topic = "cmd_vel"
+            vel_topic = "/cmd_vel"
             accel_topic = "/mavros/setpoint_accel/accel"
 
         # rospy.loginfo(vel_topic)
@@ -39,11 +39,12 @@ class Controller(object):
 
         self.pub_accel = rospy.Publisher(accel_topic, Accel, queue_size=10)
 
-        if not sim:
-            self.pub_attitude = rospy.Publisher("/mavros/setpoint_raw/attitude")
+        # if not sim:
+        #     self.pub_attitude = rospy.Publisher("/mavros/setpoint_raw/attitude")
 
         # SERVICES
         self.arming_agent = rospy.ServiceProxy("/mavros/cmd/arming", CommandBool)
+        self.set_mode = rospy.ServiceProxy("/mavros/set_mode", SetMode)
 
         # VARIABLES
         self.mavros_state = State()
@@ -56,14 +57,21 @@ class Controller(object):
     def doArming(self):
         data = self.arming_agent(True)
         rospy.loginfo("Arming Callback")
-        print(data)
+        rospy.loginfo(data)
         return data
 
     # FUNCTION TO DISARM THE SUB
     def doDisarm(self):
         data = self.arming_agent(False)
         rospy.loginfo("Disarm Callback")
-        print(data)
+        rospy.loginfo(data)
+
+    # Changes mode to Depth Hold
+    def changeToDepHold(self):
+        rospy.loginfo("Depth Hold Callback")
+        data = self.set_mode(custom_mode="ALT_HOLD")
+        rospy.loginfo(data)
+        return data
 
     # Odom Callback
     def odom_callback(self, data):
@@ -81,7 +89,17 @@ class Controller(object):
 
     def state_callback(self, data):
         self.mavros_state = data
+
+        if not self.mavros_state.armed:
+            self.doArming()
+
+        if self.mavros_state.mode != "ALT_HOLD":
+            self.changeToDepHold()
         # ADD logic depending on mavros states
 
     def velocity_publisher(self, data):
         self.pub_cmd_vel.publish(data)
+
+    def pubAttitudeData(self):
+        rospy.loginfo("YAW MEASURER")
+        rospy.loginfo("Current Yaw: " + str(self.attitude[2]))
