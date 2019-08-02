@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 from motion_controller import *
+from buoy_detection import *
 
 import rospy
 import sys
@@ -18,6 +19,8 @@ class FSM(object):
         self.state = take_layout[0]
         self.controller = Controller(self.sim)
         self.goal_reached = False
+
+        self.buoy_detector = buoyDetector(self.controller)
 
     def fsm_start(self):
 
@@ -42,7 +45,7 @@ class FSM(object):
 
         # DIVE REQUIRED AMOUNT BASED ON SECONDS
         # ADD Support for dive by height using Pressure Sensor
-        self.Dive(3)
+        self.Dive(4)
 
         rospy.sleep(1)
 
@@ -64,7 +67,7 @@ class FSM(object):
 
         self.goStraight(5)
 
-        # self.goStraight(40.0)
+        # START Darknet Execution
 
     # TRY SETPOINT_ATTITUDE
     def Turn_helper(self):
@@ -102,9 +105,9 @@ class FSM(object):
 
         vel.angular.z = 0.0
         self.controller.pub_cmd_vel.publish(vel)
-        rospy.sleep(1)
-
         rospy.loginfo("TURNING DONE")
+
+        rospy.sleep(1)
 
     def Turn(self, sec):
 
@@ -165,7 +168,7 @@ class FSM(object):
 
         vel.linear.x = 0.4
 
-        rospy.loginfo("Speed: " + str(vel.linear.z))
+        rospy.loginfo("Speed: " + str(vel.linear.x))
         start_time = time.time()
 
         # sleep rate

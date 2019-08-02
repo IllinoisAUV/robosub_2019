@@ -43,8 +43,10 @@ class Controller(object):
         #     self.pub_attitude = rospy.Publisher("/mavros/setpoint_raw/attitude")
 
         # SERVICES
-        self.arming_agent = rospy.ServiceProxy("/mavros/cmd/arming", CommandBool)
-        self.set_mode = rospy.ServiceProxy("/mavros/set_mode", SetMode)
+
+        if not sim:
+            self.arming_agent = rospy.ServiceProxy("/mavros/cmd/arming", CommandBool)
+            self.set_mode = rospy.ServiceProxy("/mavros/set_mode", SetMode)
 
         # VARIABLES
         self.mavros_state = State()
