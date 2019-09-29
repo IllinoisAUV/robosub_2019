@@ -69,6 +69,12 @@ class buoyDetector(object):
 
         global targets
 
+        vel = Twist()
+
+        vel.linear.z = -0.5
+
+        self.hitAndTurnHelper(vel, 8)
+
         while self.execute and not rospy.is_shutdown():
 
             if not self.detected:
