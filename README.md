@@ -111,7 +111,7 @@ Build using:
 catkin build -j4
 ```
 
-Run local setup
+Run local setup (You should add this to your `~/.bashrc`)
 
 ```bash
 source ~/sigbot/devel/setup.bash
